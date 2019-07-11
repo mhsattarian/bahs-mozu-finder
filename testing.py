@@ -3,7 +3,7 @@ import re
 import os
 import sys
 
-messages = open("commit_messages.txt").read().split('\n')
+messages = open("disc_subjsctes.txt").read().split('\n')
 
 humans = open("static/humans.txt").read().split('\n')
 

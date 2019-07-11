@@ -23,7 +23,7 @@ names = ['Nick', 'Steve', 'Andy', 'Qi', 'Fanny', 'Sarah', 'Cord', 'Todd',
     'Jen', 'Marcus', 'Edy', 'Rachel']
 
 humans_file = os.path.join(os.path.dirname(__file__), 'static', 'humans.txt')
-messages_file = os.path.join(os.path.dirname(__file__), 'commit_messages.txt')
+messages_file = os.path.join(os.path.dirname(__file__), 'disc_subjsctes.txt')
 messages = {}
 
 # Create a hash table of all commit messages
