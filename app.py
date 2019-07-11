@@ -17,37 +17,17 @@ from tornado.options import define, options
 
 define("port", default=5000, help="run on the given port", type=int)
 
-names = ['Nick', 'Steve', 'Andy', 'Qi', 'Fanny', 'Sarah', 'Cord', 'Todd',
-    'Chris', 'Pasha', 'Gabe', 'Tony', 'Jason', 'Randal', 'Ali', 'Kim',
-    'Rainer', 'Guillaume', 'Kelan', 'David', 'John', 'Stephen', 'Tom', 'Steven',
-    'Jen', 'Marcus', 'Edy', 'Rachel']
-
-humans_file = os.path.join(os.path.dirname(__file__), 'static', 'humans.txt')
 messages_file = os.path.join(os.path.dirname(__file__), 'disc_subjsctes.txt')
 messages = {}
 
-# Create a hash table of all commit messages
+# Create a hash table of all discussion subjsctes
 with open(messages_file) as messages_input:
     for line in messages_input.readlines():
         messages[md5(line).hexdigest()] = line
 
-with open(humans_file) as humans_input:
-    humans_content = humans_input.read()
-    for line in humans_content.split("\n"):
-        if "Name:" in line:
-            data = line[6:].rstrip()
-            if data.find("github:") == 0:
-                names.append(data[7:])
-            else:
-                names.append(data.split(" ")[0])
-
 num_re = re.compile(r"XNUM([0-9,]*)X")
 
 def fill_line(message):
-    message = message.replace('XNAMEX', random.choice(names))
-    message = message.replace('XUPPERNAMEX', random.choice(names).upper())
-    message = message.replace('XLOWERNAMEX', random.choice(names).lower())
-
     nums = num_re.findall(message)
 
     while nums:
@@ -95,7 +75,7 @@ class PlainTextHandler(MainHandler):
 class JsonHandler(MainHandler):
     def output_message(self, message, message_hash):
         self.set_header('Content-Type', 'application/json')
-        self.write(json.dumps({'hash': message_hash, 'commit_message':message.replace('\n', ''), 'permalink': self.request.protocol + "://" + self.request.host + '/' + message_hash }))
+        self.write(json.dumps({'hash': message_hash, 'disc_subjscte':message.replace('\n', ''), 'permalink': self.request.protocol + "://" + self.request.host + '/' + message_hash }))
 
 class HumansHandler(tornado.web.RequestHandler):
     def get(self):

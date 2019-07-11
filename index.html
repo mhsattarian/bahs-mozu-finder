@@ -3,10 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Bahs Mozo Finder</title>
-    <link rel="author" href="/humans.txt" />
     <style>
+        @font-face {
+            font-family: 'samim';
+            src: url('static/font/Samim-Bold.eot'); /* IE9 Compat Modes */
+            src: url('static/font/Samim.woff2') format('woff2'), /* Super Modern Browsers */
+                 url('static/font/Samim.woff') format('woff'), /* Pretty Modern Browsers */
+                 url('static/font/Samim.ttf')  format('truetype'); /* Safari, Android, iOS */
+        }
+
+        @font-face {
+            font-family: 'samim bold';
+            src: url('static/font/Samim-Bold.eot'); /* IE9 Compat Modes */
+            src: url('static/font/Samim-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+                 url('static/font/Samim-Bold.woff') format('woff'), /* Pretty Modern Browsers */
+                 url('static/font/Samim-Bold.ttf')  format('truetype'); /* Safari, Android, iOS */
+        }
+
         body {
-            font-family: 'b zar', 'Lucida Console', 'Courier New', monospace;
+            font-family: 'samim', 'b zar', 'Lucida Console', 'Courier New', monospace;
             font-size: 26pt;
             direction: rtl;
             line-height: 1.2em;
@@ -17,6 +32,7 @@
             margin: 1em auto;
         }
         .permalink {
+            font-family: 'samim';
             font-size: .5em;
             color: #ddd;
             line-height: 1em;
@@ -38,5 +54,4 @@
         </p>
     </div>
 </body>
-<!-- Like what you see? http://github.com/ngerakines/commitment -->
 </html>
