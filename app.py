@@ -1,8 +1,27 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+
 import os
 import sys
 import random
 import re
 import json
+
+# install: pip install --upgrade arabic-reshaper
+import arabic_reshaper
+
+# install: pip install python-bidi
+from bidi.algorithm import get_display
+
+# install: pip install Pillow
+from PIL import ImageFont
+from PIL import Image
+from PIL import ImageDraw
+
+fontFile = "static/font/Samim.ttf"
+
+# this was a 400x400 jpg file
+# imageFile = "/Users/amirreza/pil/input.jpg"
 
 try:
     from hashlib import md5
@@ -53,6 +72,31 @@ def fill_line(message):
 
     return message
 
+def text_wrap(text, font, max_width):
+    lines = []
+    # If the width of the text is smaller than image width
+    # we don't need to split it, just add it to the lines array
+    # and return
+    if font.getsize(text)[0] <= max_width:
+        lines.append(text) 
+    else:
+        # split the line by spaces to get words
+        words = text.split(' ')  
+        i = 0
+        # append every word to a line while its width is shorter than image width
+        while i < len(words):
+            line = ''         
+            while i < len(words) and font.getsize(line + words[i])[0] <= max_width:                
+                line = line + words[i] + " "
+                i += 1
+            if not line:
+                line = words[i]
+                i += 1
+            # when the line gets longer than the max width do not append the word, 
+            # add the line to the lines array
+            lines.append(line)    
+    return lines
+
 class MainHandler(tornado.web.RequestHandler):
     def get(self, message_hash=None):
         if not message_hash:
@@ -60,9 +104,42 @@ class MainHandler(tornado.web.RequestHandler):
         elif message_hash not in messages:
             raise tornado.web.HTTPError(404)
 
-        message = fill_line(messages[message_hash])
+        message = fill_line(messages[message_hash])[:-1]
 
         self.output_message(message, message_hash)
+    
+        image = Image.new("RGBA", (300, 150), (255,255,255))
+        image_size = image.size
+
+        # load the font and image
+        font = ImageFont.truetype(fontFile, 18)
+        # image = Image.open(imageFile)
+        # firts you must prepare your text (you dont need this for english text)
+        text = unicode(message, "utf-8")
+        # start drawing on image
+        draw = ImageDraw.Draw(image)
+
+        lines = text_wrap(text, font, image_size[0] - 10)
+        line_height = font.getsize('hg')[1]
+        
+        x = 10
+        y = 20
+        for line in lines:
+            reshaped_text = arabic_reshaper.reshape(line)    # correct its shape
+            bidi_text = get_display(reshaped_text)           # correct its direction
+            # draw the line on the image
+            x = image_size[0] - font.getsize(bidi_text)[0] - x
+            draw.text((x, y), bidi_text, (0,0,0), font=font)
+            
+            # update the y position so that we can use it for next line
+            y = y + line_height
+            x = 10
+
+        # draw.text((10, 0), bidi_text, (0,0,0), font=font)
+        draw = ImageDraw.Draw(image)
+
+        # save it
+        image.save("thumbnails/{}.png".format(message_hash))
 
     def output_message(self, message, message_hash):
         self.render('index.html', message=message, message_hash=message_hash)
@@ -82,8 +159,22 @@ class HumansHandler(tornado.web.RequestHandler):
         self.set_header('Content-Type', 'text/plain')
         self.write(humans_content)
 
+
+# class ThumbnailHandler(tornado.web.RequestHandler):
+#     def get(self, img_id):
+#         img_name = 'thumbnails/' + img_id + '.png'
+#         img = pygame.image.load(img_name)
+#         str_img = pygame.image.tostring(img, "RGB")
+#         size = img.get_size()
+#         fimg = Image.frombytes("RGB", size, str_img, "raw")
+#         fobj = StringIO.StringIO()
+#         fimg.save(fobj, format="png")  #jpeg encoder isn't available in my install...
+#         for line in fobj.getvalue():
+#             self.write(line)
+#         self.set_header("Content-type",  "image/png")
+
 settings = {
-    'static_path': os.path.join(os.path.dirname(__file__), 'static'),
+    # 'static_path': os.path.join(os.path.dirname(__file__), 'static'),
 }
 
 application = tornado.web.Application([
@@ -94,6 +185,8 @@ application = tornado.web.Application([
     (r'/index.txt', PlainTextHandler),
     (r'/([a-z0-9]+)/index.txt', PlainTextHandler),
     (r'/humans.txt', HumansHandler),
+    (r'/thumbnails/(.*)', tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), 'thumbnails')})
+    # (r'/thumbnails/([a-z0-9]+)', tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), 'thumbnails')}),
 ], **settings)
 
 if __name__ == '__main__':

@@ -1,23 +1,37 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="UTF-8">
+    <meta property="og:title" content="موضوع بحث">
+    <meta property="og:description" content="{% raw message %}">
+    <meta property="og:image" content="/thumbnails/{{message_hash}}.png">
+    <!-- <meta property="og:url" content="http://euro-travel-example.com/index.htm"> -->
+    <meta property="og:site_name" content="پیدا کننده موضوع بحث">
     <title>Bahs Mozo Finder</title>
     <style>
         @font-face {
             font-family: 'samim';
-            src: url('static/font/Samim-Bold.eot'); /* IE9 Compat Modes */
-            src: url('static/font/Samim.woff2') format('woff2'), /* Super Modern Browsers */
-                 url('static/font/Samim.woff') format('woff'), /* Pretty Modern Browsers */
-                 url('static/font/Samim.ttf')  format('truetype'); /* Safari, Android, iOS */
+            src: url('static/font/Samim-Bold.eot');
+            /* IE9 Compat Modes */
+            src: url('static/font/Samim.woff2') format('woff2'),
+                /* Super Modern Browsers */
+                url('static/font/Samim.woff') format('woff'),
+                /* Pretty Modern Browsers */
+                url('static/font/Samim.ttf') format('truetype');
+            /* Safari, Android, iOS */
         }
 
         @font-face {
             font-family: 'samim bold';
-            src: url('static/font/Samim-Bold.eot'); /* IE9 Compat Modes */
-            src: url('static/font/Samim-Bold.woff2') format('woff2'), /* Super Modern Browsers */
-                 url('static/font/Samim-Bold.woff') format('woff'), /* Pretty Modern Browsers */
-                 url('static/font/Samim-Bold.ttf')  format('truetype'); /* Safari, Android, iOS */
+            src: url('static/font/Samim-Bold.eot');
+            /* IE9 Compat Modes */
+            src: url('static/font/Samim-Bold.woff2') format('woff2'),
+                /* Super Modern Browsers */
+                url('static/font/Samim-Bold.woff') format('woff'),
+                /* Pretty Modern Browsers */
+                url('static/font/Samim-Bold.ttf') format('truetype');
+            /* Safari, Android, iOS */
         }
 
         body {
@@ -26,32 +40,48 @@
             direction: rtl;
             line-height: 1.2em;
         }
+
         #content {
             width: 760px;
             /* text-align: left; */
             margin: 1em auto;
         }
+
         .permalink {
             font-family: 'samim';
             font-size: .5em;
             color: #ddd;
             line-height: 1em;
         }
+
         .permalink a {
             text-decoration: none;
             color: inherit;
         }
+
         .permalink a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div id="content">
         <p>{% raw message %}</p>
-        <p class="permalink">
+        <p class="permalink" data-html2canvas-ignore>
             [<a href="/{{ message_hash }}">لینک ثابت</a>]
         </p>
     </div>
+    <!-- <script src="/static/js/html2canvas.min.js"></script>
+    <script>
+        html2canvas(document.querySelector('#content'), {
+            // ignoreElements(element) {
+            //     if (element == document.querySelector('.permalink')) return true;
+            // }
+        }).then(function (canvas) {
+            document.body.appendChild(canvas)
+        });
+    </script> -->
 </body>
+
 </html>
