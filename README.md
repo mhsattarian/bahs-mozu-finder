@@ -2,7 +2,7 @@
 it's a silly, small project based on [commitment](https://github.com/ngerakines/commitment), created to find subjects to discuss over in `Avalon, the group!`.
 
 #### Currently runnig at:
-- [bahs-mozo-finder.herokuapp.com](https://bahs-mozo-finder.herokuapp.com)
+- [bahs-mozu-finder.herokuapp.com](https://bahs-mozu-finder.herokuapp.com)
 - [bahs-mozo-finder-mh-sattarian.fandogh.cloud](https://bahs-mozo-finder-mh-sattarian.fandogh.cloud)
 
 
