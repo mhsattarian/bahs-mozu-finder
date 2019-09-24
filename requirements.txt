@@ -2,3 +2,4 @@ Tornado==4.2.0
 arabic-reshaper==2.0.15
 Pillow==6.1.0
 python-bidi==0.4.2
+faunadb==2.7.0

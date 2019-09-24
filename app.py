@@ -34,15 +34,21 @@ import tornado.web
 from tornado.escape import xhtml_unescape
 from tornado.options import define, options
 
+from faunadb import query as q
+from faunadb.client import FaunaClient
+
+client = FaunaClient(secret="fnADZDRJZHACCPvDZ928toYh6dnhoqsB4daanp5n")
+
+
 define("port", default=5000, help="run on the given port", type=int)
 
 messages_file = os.path.join(os.path.dirname(__file__), 'disc_subjsctes.txt')
 messages = {}
 
 # Create a hash table of all discussion subjsctes
-with open(messages_file) as messages_input:
-    for line in messages_input.readlines():
-        messages[md5(line).hexdigest()] = line
+# with open(messages_file) as messages_input:
+#     for line in messages_input.readlines():
+#         messages[md5(line).hexdigest()] = line
 
 num_re = re.compile(r"XNUM([0-9,]*)X")
 
@@ -100,13 +106,28 @@ def text_wrap(text, font, max_width):
 class MainHandler(tornado.web.RequestHandler):
     def get(self, message_hash=None):
         if not message_hash:
+            page = q.paginate(q.match(q.index("all_subjects")))
+            ns = q.map_(lambda a: q.select(["data"], q.get(a)), page)
+            result = client.query(ns)['data']
+
+            for message in result:
+                messages[message['hash']] = message
             message_hash = random.choice(messages.keys())
-        elif message_hash not in messages:
-            raise tornado.web.HTTPError(404)
 
-        message = fill_line(messages[message_hash])[:-1]
+            message = fill_line(messages[message_hash]['title'])
+            suggester = messages[message_hash]['suggester']
 
-        self.output_message(message, message_hash)
+        else:
+            page = q.paginate(q.match(q.index("hash"), message_hash))
+            ns = q.map_(lambda a: q.select(["data"], q.get(a)), page)
+            result = client.query(ns)['data']
+            if len(result) > 0:
+                message = fill_line(result[0]['title'])
+                suggester = result[0]['suggester']
+            else:
+                raise tornado.web.HTTPError(404)
+
+        self.output_message(message, message_hash, suggester)
     
         image = Image.new("RGBA", (300, 150), (255,255,255))
         image_size = image.size
@@ -115,7 +136,8 @@ class MainHandler(tornado.web.RequestHandler):
         font = ImageFont.truetype(fontFile, 18)
         # image = Image.open(imageFile)
         # firts you must prepare your text (you dont need this for english text)
-        text = unicode(message, "utf-8")
+        # text = unicode(message, "utf-8")
+        text = message
         # start drawing on image
         draw = ImageDraw.Draw(image)
 
@@ -141,8 +163,8 @@ class MainHandler(tornado.web.RequestHandler):
         # save it
         image.save("thumbnails/{}.png".format(message_hash))
 
-    def output_message(self, message, message_hash):
-        self.render('index.html', message=message, message_hash=message_hash)
+    def output_message(self, message, message_hash, suggester):
+        self.render('index.html', message=message, message_hash=message_hash, suggester=suggester)
 
 class PlainTextHandler(MainHandler):
     def output_message(self, message, message_hash):
