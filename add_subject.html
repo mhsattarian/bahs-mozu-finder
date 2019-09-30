@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add new subject</title>
+    <style>
+        @import url(https://cdn.rawgit.com/rastikerdar/vazir-font/v21.0.1/dist/font-face.css);
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'vazir', 'Times New Roman', Times, serif
+        }
+
+        body {
+            height: 100vh;
+            padding: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hide {
+            visibility: hidden;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            width: 800px;
+            direction: rtl;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #wrapper {
+            width: 80%;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            /* flex-direction: row-reverse; */
+            align-items: center;
+            justify-content: center;
+        }
+
+        label {
+            width: 80%;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #subject {
+            outline: none;
+            border: 2px solid black;
+            border-radius: 9px;
+            height: 100%;
+            width: 100%;
+            direction: rtl;
+            padding-right: 20px;
+        }
+
+        #details-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+            margin-top: 5px;
+        }
+
+        #details-wrapper div {
+            height: 16px;
+        }
+
+        #details-wrapper label {
+            font-weight: lighter;
+            font-size: x-small;
+        }
+
+        #details-wrapper input {
+            outline: none;
+            border: none;
+            height: 100%;
+            direction: rtl;
+            padding-right: 10px;
+            font-weight: normal;
+            font-size: x-small;
+        }
+
+
+        #add {
+            outline: none;
+            border-radius: 5px;
+            border: none;
+            height: 100%;
+            font-size: xx-large;
+            line-height: 1.45;
+            background: none;
+            cursor: pointer;
+        }
+
+        #add:disabled {
+            opacity: .5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="preloader"></div>
+    <div id="container" class="hide">
+        <label for="subject">اضافه‌کردن موضوع</label>
+        <div id="wrapper">
+            <input type="text" name="subject" id="subject">
+            <button id="add" disabled>◀️</button>
+        </div>
+        <div id="details-wrapper">
+            <div id="details-suggester">
+                <label for="suggester">پیشنهاد از:</label>
+                <input type="text" name="suggester" id="suggester">
+            </div>
+            <div id="details-resources">
+                <label for="resources">منابع مطالعاتی پیشنهادی:</label>
+                <input type="text" name="resources" id="resources">
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    window.onload = function () {
+        const $ = document.querySelectorAll.bind(document);
+
+        const container = $('#container')[0],
+            subjectInput = $('#subject')[0],
+            suggesterInput = $('#suggester')[0],
+            resourcesInput = $('#resources')[0],
+            addButton = $('#add')[0];
+
+        // show elements when page is done loading
+        container.classList.remove('hide');
+
+        // enable the add button
+        subjectInput.addEventListener('keyup', () => {
+            if (subjectInput.value.length == 0)
+                addButton.disabled = 'disabled'
+            else
+                addButton.disabled = ''
+        });
+
+
+        // add subject to DB
+        function addNewSubject(event) {
+            console.log('new subject added!')
+        }
+        document.querySelector('#add').addEventListener('click', addNewSubject);
+
+    }
+
+
+</script>
+
+</html>
