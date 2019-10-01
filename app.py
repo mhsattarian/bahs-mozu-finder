@@ -17,6 +17,7 @@ from bidi.algorithm import get_display
 from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
+from random import choice
 
 fontFile = "static/font/Samim.ttf"
 
@@ -166,6 +167,27 @@ class MainHandler(tornado.web.RequestHandler):
     def output_message(self, message, message_hash, suggester):
         self.render('index.html', message=message, message_hash=message_hash, suggester=suggester)
 
+class SubjectHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render('add_subject.html')
+
+    def post(self, *args, **kwargs):
+        title = self.get_argument('subject')
+        suggester = self.get_argument('suggester')
+        source = self.get_argument('resources')
+        token = ''.join(choice('1234567890') for i in range(18))
+        hashed = md5(title.encode('utf-8')).hexdigest()
+
+        client.query(q.insert(q.ref(q.collection('Subjects'), token), 1, 'create', {'data' : {
+            'title' : title,
+            'suggester' : suggester,
+            'hash' : hashed,
+            'source' : source
+        }}));
+
+        self.write(hashed)
+
+
 class PlainTextHandler(MainHandler):
     def output_message(self, message, message_hash):
         self.set_header('Content-Type', 'text/plain')
@@ -202,6 +224,7 @@ settings = {
 application = tornado.web.Application([
     (r'/', MainHandler),
     (r'/([a-z0-9]+)', MainHandler),
+    (r'/subject/add', SubjectHandler),
     (r'/index.json', JsonHandler),
     (r'/([a-z0-9]+).json', JsonHandler),
     (r'/index.txt', PlainTextHandler),

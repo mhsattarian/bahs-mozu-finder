@@ -154,7 +154,17 @@
 
         // add subject to DB
         function addNewSubject(event) {
-            console.log('new subject added!')
+            var data = new FormData();
+            data.append('subject', subjectInput.value);
+            data.append('suggester', suggesterInput.value);
+            data.append('resources', resourcesInput.value);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/subject/add', true);
+            xhr.onload = function () {
+                window.location.replace('/' + this.responseText);
+            };
+            xhr.send(data);
         }
         document.querySelector('#add').addEventListener('click', addNewSubject);
 
