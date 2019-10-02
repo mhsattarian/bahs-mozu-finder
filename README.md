@@ -1,4 +1,4 @@
-# Bahas-Mozu-Finder
+# Bahs-Mozu-Finder
 it's a silly, small project based on [commitment](https://github.com/ngerakines/commitment), created to find subjects to discuss over in `Avalon, the group!`.
 
 #### Currently runnig at:
