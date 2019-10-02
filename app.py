@@ -219,7 +219,7 @@ class HumansHandler(tornado.web.RequestHandler):
 #         self.set_header("Content-type",  "image/png")
 
 settings = {
-    # 'static_path': os.path.join(os.path.dirname(__file__), 'static'),
+    'static_path': os.path.join(os.path.dirname(__file__), 'static'),
 }
 
 application = tornado.web.Application([
