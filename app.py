@@ -107,7 +107,7 @@ def text_wrap(text, font, max_width):
 class MainHandler(tornado.web.RequestHandler):
     def get(self, message_hash=None):
         if not message_hash:
-            page = q.paginate(q.match(q.index("all_subjects")))
+            page = q.paginate(q.match(q.index("confirmed"), 'True'))
             ns = q.map_(lambda a: q.select(["data"], q.get(a)), page)
             result = client.query(ns)['data']
 
@@ -174,7 +174,7 @@ class SubjectHandler(tornado.web.RequestHandler):
     def post(self, *args, **kwargs):
         title = self.get_argument('subject')
         suggester = self.get_argument('suggester')
-        source = self.get_argument('resources')
+        resource = self.get_argument('resources')
         token = ''.join(choice('1234567890') for i in range(18))
         hashed = md5(title.encode('utf-8')).hexdigest()
 
@@ -182,8 +182,9 @@ class SubjectHandler(tornado.web.RequestHandler):
             'title' : title,
             'suggester' : suggester,
             'hash' : hashed,
-            'source' : source
-        }}));
+            'resource' : resource,
+            'confirmed' : 'False'
+        }}))
 
         self.write(hashed)
 
