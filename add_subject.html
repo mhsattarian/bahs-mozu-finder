@@ -102,6 +102,12 @@
             line-height: 1.45;
             background: none;
             cursor: pointer;
+            display: flex;
+            margin: 2em auto 0;
+            transform: rotate(45deg);
+            border-style: solid;
+            border-width: 20px 20px 5px 5px;
+            border-color: transparent transparent #ff6b6b #ff6b6b;
         }
 
         #add:disabled {
@@ -116,7 +122,8 @@
         <label for="subject">اضافه‌کردن موضوع</label>
         <div id="wrapper">
             <input type="text" name="subject" id="subject">
-            <button id="add" disabled>◀️</button>
+            <!-- <button id="add" disabled>◀️</button> -->
+            <button id="add" disabled></button>
         </div>
         <div id="details-wrapper">
             <div id="details-suggester">
