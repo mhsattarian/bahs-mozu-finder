@@ -33,14 +33,15 @@
         #container {
             display: flex;
             flex-direction: column;
-            width: 800px;
+            width: 80%;
             direction: rtl;
             align-items: center;
             justify-content: center;
+            max-width: 700px;
         }
 
         #wrapper {
-            width: 80%;
+            width: 100%;
             height: 40px;
             border-radius: 5px;
             display: flex;
@@ -94,13 +95,14 @@
 
         #add {
             outline: none;
-            border-radius: 5px;
-            border: none;
-            height: 100%;
             font-size: xx-large;
-            line-height: 1.45;
             background: none;
             cursor: pointer;
+            display: flex;
+            transform: rotate(45deg);
+            border-style: solid;
+            border-width: 18px 18px 5px 5px;
+            border-color: transparent transparent black black;
         }
 
         #add:disabled {
@@ -115,7 +117,8 @@
         <label for="subject">اضافه‌کردن موضوع</label>
         <div id="wrapper">
             <input type="text" name="subject" id="subject">
-            <button id="add" disabled>◀️</button>
+            <!-- <button id="add" disabled>◀️</button> -->
+            <button id="add" disabled></button>
         </div>
         <div id="details-wrapper">
             <div id="details-suggester">
