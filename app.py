@@ -17,7 +17,6 @@ from bidi.algorithm import get_display
 from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
-from random import choice
 
 fontFile = "static/font/Samim.ttf"
 
@@ -175,7 +174,7 @@ class SubjectHandler(tornado.web.RequestHandler):
         title = self.get_argument('subject')
         suggester = self.get_argument('suggester')
         resource = self.get_argument('resources')
-        token = ''.join(choice('1234567890') for i in range(18))
+        token = ''.join(random.choice('1234567890') for i in range(18))
         hashed = md5(title.encode('utf-8')).hexdigest()
 
         client.query(q.insert(q.ref(q.collection('Subjects'), token), 1, 'create', {'data' : {
