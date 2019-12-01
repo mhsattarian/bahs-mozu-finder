@@ -2,7 +2,6 @@
 # -*- coding: utf8 -*-
 
 import os
-import sys
 import random
 import re
 import json
@@ -32,7 +31,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 from tornado.escape import xhtml_unescape
-from tornado.options import define, options
+from tornado.options import define
 
 from faunadb import query as q
 from faunadb.client import FaunaClient
@@ -84,15 +83,15 @@ def text_wrap(text, font, max_width):
     # we don't need to split it, just add it to the lines array
     # and return
     if font.getsize(text)[0] <= max_width:
-        lines.append(text) 
+        lines.append(text)
     else:
         # split the line by spaces to get words
-        words = text.split(' ')  
+        words = text.split(' ')
         i = 0
         # append every word to a line while its width is shorter than image width
         while i < len(words):
-            line = ''         
-            while i < len(words) and font.getsize(line + words[i])[0] <= max_width:                
+            line = ''
+            while i < len(words) and font.getsize(line + words[i])[0] <= max_width:
                 line = line + words[i] + " "
                 i += 1
             if not line:
@@ -100,7 +99,7 @@ def text_wrap(text, font, max_width):
                 i += 1
             # when the line gets longer than the max width do not append the word, 
             # add the line to the lines array
-            lines.append(line)    
+            lines.append(line)
     return lines
 
 class MainHandler(tornado.web.RequestHandler):
@@ -152,7 +151,7 @@ class MainHandler(tornado.web.RequestHandler):
             # draw the line on the image
             x = image_size[0] - font.getsize(bidi_text)[0] - x
             draw.text((x, y), bidi_text, (0,0,0), font=font)
-            
+
             # update the y position so that we can use it for next line
             y = y + line_height
             x = 10
@@ -189,20 +188,19 @@ class SubjectHandler(tornado.web.RequestHandler):
 
 
 class PlainTextHandler(MainHandler):
-    def output_message(self, message, message_hash):
+    def output_message(self, message, message_hash, suggester):
         self.set_header('Content-Type', 'text/plain')
         self.write(xhtml_unescape(message).replace('<br/>', '\n'))
 
 class JsonHandler(MainHandler):
-    def output_message(self, message, message_hash):
+    def output_message(self, message, message_hash, suggester):
         self.set_header('Content-Type', 'application/json')
-        self.write(json.dumps({'hash': message_hash, 'disc_subjscte':message.replace('\n', ''), 'permalink': self.request.protocol + "://" + self.request.host + '/' + message_hash }))
-
-class HumansHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.set_header('Content-Type', 'text/plain')
-        self.write(humans_content)
-
+        self.write(json.dumps({
+            'hash': message_hash,
+            'disc_subject':message.replace('\n', ''),
+            'permalink': self.request.protocol + "://" + self.request.host + '/' + message_hash,
+            'suggester': suggester
+        }))
 
 # class ThumbnailHandler(tornado.web.RequestHandler):
 #     def get(self, img_id):
@@ -229,7 +227,6 @@ application = tornado.web.Application([
     (r'/([a-z0-9]+).json', JsonHandler),
     (r'/index.txt', PlainTextHandler),
     (r'/([a-z0-9]+)/index.txt', PlainTextHandler),
-    (r'/humans.txt', HumansHandler),
     (r'/thumbnails/(.*)', tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), 'thumbnails')})
     # (r'/thumbnails/([a-z0-9]+)', tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), 'thumbnails')}),
 ], **settings)
