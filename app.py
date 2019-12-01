@@ -97,7 +97,7 @@ def text_wrap(text, font, max_width):
             if not line:
                 line = words[i]
                 i += 1
-            # when the line gets longer than the max width do not append the word, 
+            # when the line gets longer than the max width do not append the word,
             # add the line to the lines array
             lines.append(line)
     return lines
@@ -142,7 +142,7 @@ class MainHandler(tornado.web.RequestHandler):
 
         lines = text_wrap(text, font, image_size[0] - 10)
         line_height = font.getsize('hg')[1]
-        
+
         x = 10
         y = 20
         for line in lines:
