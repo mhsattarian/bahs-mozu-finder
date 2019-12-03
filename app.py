@@ -36,7 +36,7 @@ from tornado.options import define
 from faunadb import query as q
 from faunadb.client import FaunaClient
 
-client = FaunaClient(secret="fnADZDRJZHACCPvDZ928toYh6dnhoqsB4daanp5n")
+client = FaunaClient(secret=os.environ['FAUNA-SESSION'])
 
 
 define("port", default=5000, help="run on the given port", type=int)
